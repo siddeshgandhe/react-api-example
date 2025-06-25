@@ -1,10 +1,11 @@
-import { useEffect, useState } from "react";
+import { useEffect, useState, useCallback } from "react";
 import styles from "./EditPhotoDialog.module.css";
 
 const EditPhotoDialog = ({ photo, onClose, onSubmit }) => {
   const [title, setTitle] = useState(photo.title);
   const [albumId, setAlbumId] = useState(photo.albumId || "");
   const [albums, setAlbums] = useState([]);
+  const isDisabled = !title.trim();
 
   useEffect(() => {
     fetch("https://jsonplaceholder.typicode.com/albums")
@@ -28,6 +29,7 @@ const EditPhotoDialog = ({ photo, onClose, onSubmit }) => {
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             required
+            minLength="8"
           />
 
           <label>Album:</label>
@@ -45,8 +47,14 @@ const EditPhotoDialog = ({ photo, onClose, onSubmit }) => {
           </select>
 
           <div className={styles.actions}>
-            <button type="submit">Save</button>
-            <button type="button" onClick={onClose}>
+            <button
+              className={isDisabled ? styles.disable : styles.enable}
+              disabled={isDisabled}
+              type="submit"
+            >
+              Save
+            </button>
+            <button className={styles.disable} type="button" onClick={onClose}>
               Cancel
             </button>
           </div>

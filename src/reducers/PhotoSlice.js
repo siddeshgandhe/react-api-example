@@ -6,12 +6,17 @@ const initialState = {
   error: "",
   editSuccess: false,
   deleteSuccess: false,
+  currentPage: 1,
 };
 
 const PhotoSlice = createSlice({
   name: "photos",
   initialState,
-  reducers: {},
+  reducers: {
+    setPage: (state, action) => {
+      state.currentPage = action.payload;
+    },
+  },
 
   extraReducers: (builder) => {
     builder
@@ -66,5 +71,6 @@ export const {
   addFail,
 } = PhotoSlice.actions;
 
-export const { clearDeleteSuccess } = PhotoSlice.actions;
+export const { setPage } = PhotoSlice.actions;
+
 export default PhotoSlice.reducer;

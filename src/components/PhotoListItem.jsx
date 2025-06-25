@@ -1,7 +1,7 @@
 import styles from "./PhotoListItem.module.css";
 import ConfirmDialog from "./dialogs/ConfirmDialog";
 import EditPhotoDialog from "./dialogs/EditPhotoDialog";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import { deletePhoto, editPhoto } from "../actions/PhotoActions";
 import { useDispatch } from "react-redux";
 import { useNavigate } from "react-router-dom";
@@ -13,19 +13,19 @@ const PhotoListItem = ({ photo }) => {
   const [showConfirm, setShowConfirm] = useState(false);
   const [showEdit, setShowEdit] = useState(false);
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     dispatch(deletePhoto(photo.id));
     setShowConfirm(false);
-  };
+  }, []);
 
-  const handleEdit = (updatedPhoto) => {
+  const handleEdit = useCallback((updatedPhoto) => {
     dispatch(editPhoto(updatedPhoto));
     setShowEdit(false);
-  };
+  }, []);
 
-  const handleItemClick = () => {
+  const handleItemClick = useCallback(() => {
     navigate(`/photos/${photo.id}`);
-  };
+  }, []);
 
   return (
     <li className={styles.item} onClick={handleItemClick}>

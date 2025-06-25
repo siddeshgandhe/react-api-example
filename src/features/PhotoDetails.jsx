@@ -1,7 +1,7 @@
 import { useParams, useNavigate } from "react-router-dom";
 import { useSelector, useDispatch } from "react-redux";
 import { deletePhoto, editPhoto } from "../actions/PhotoActions";
-import { useState } from "react";
+import { useCallback, useState } from "react";
 import EditPhotoDialog from "../components/dialogs/EditPhotoDialog";
 import ConfirmDialog from "../components/dialogs/ConfirmDialog";
 import styles from "./PhotoDetails.module.css";
@@ -18,19 +18,20 @@ const PhotoDetails = () => {
   const [showEdit, setShowEdit] = useState(false);
   const [showConfirm, setShowConfirm] = useState(false);
 
-  const handleDelete = () => {
+  const handleDelete = useCallback(() => {
     dispatch(deletePhoto(photo.id));
     navigate("/");
-  };
+  }, []);
 
-  const handleEdit = (updatedData) => {
+  const handleEdit = useCallback((updatedData) => {
     dispatch(editPhoto(updatedData));
     setShowEdit(false);
-  };
+  });
+
+  if (!photo) return <p>Photo not found</p>;
 
   return (
     <div className={styles.container}>
-      {!photo && <p>Photo not found</p>}
       <h2 className={styles.title}>{photo.title}</h2>
       <img src={photo.url} alt={photo.title} className={styles.image} />
       <div className={styles.actions}>
