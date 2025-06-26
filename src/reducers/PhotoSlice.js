@@ -1,5 +1,6 @@
 import { createSlice } from "@reduxjs/toolkit";
 import { fetchPhotos, deletePhoto, editPhoto } from "../actions/PhotoActions";
+import { LIMIT } from "../actions/PhotoActions";
 const initialState = {
   loading: false,
   photos: [],
@@ -7,6 +8,8 @@ const initialState = {
   editSuccess: false,
   deleteSuccess: false,
   currentPage: 1,
+  perPage: LIMIT,
+  totalFetchedPages: 0,
 };
 
 const PhotoSlice = createSlice({
@@ -26,7 +29,11 @@ const PhotoSlice = createSlice({
       })
       .addCase(fetchPhotos.fulfilled, (state, action) => {
         state.loading = false;
-        state.photos = action.payload;
+        const { page, data, cached } = action.payload;
+        if (!cached) {
+          state.photos.push(...data);
+          state.totalFetchedPages = Math.max(state.totalFetchedPages, page);
+        }
       })
       .addCase(fetchPhotos.rejected, (state, action) => {
         state.loading = false;

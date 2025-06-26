@@ -1,18 +1,22 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
 
+export const LIMIT = 5;
+
 export const fetchPhotos = createAsyncThunk(
   "photos/fetchPhotos",
 
-  async (page = 1, thunkAPI) => {
-    const limit = 5;
-
+  async (page, { getState }, thunkAPI) => {
     try {
-      const res = await fetch(
-        `https://jsonplaceholder.typicode.com/photos?_page=${page}&_limit=${limit}`
+      const { totalFetchedPages } = getState().photos;
+      if (page <= totalFetchedPages) return { cached: true };
+
+      const response = await fetch(
+        `https://jsonplaceholder.typicode.com/photos?_page=${page}&_limit=${LIMIT}`
       );
       console.log("API called");
-      if (!res.ok) throw new Error("Network response was not ok");
-      return await res.json();
+      if (!response.ok) throw new Error("Network response was not ok");
+      const data = await response.json();
+      return { page, data, cached: false };
     } catch (error) {
       return thunkAPI.rejectWithValue(error.message);
     }
